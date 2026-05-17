@@ -93,38 +93,73 @@ const statusColors = {
 export function TransactionsTable() {
   return (
     <div className="bg-white rounded-lg border border-gray-200">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
-        <p className="text-sm text-gray-500 mt-1">Latest financial activities</p>
+      <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">Recent Transactions</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">Latest financial activities</p>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Transaction ID</TableHead>
-            <TableHead>Member</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {transactions.map((transaction) => (
-            <TableRow key={transaction.id}>
-              <TableCell className="font-medium">{transaction.id}</TableCell>
-              <TableCell>{transaction.member}</TableCell>
-              <TableCell className="text-gray-600">{transaction.type}</TableCell>
-              <TableCell className="font-semibold">{transaction.amount}</TableCell>
-              <TableCell className="text-gray-600">{transaction.date}</TableCell>
-              <TableCell>
-                <Badge className={statusColors[transaction.status]} variant="secondary">
-                  {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                </Badge>
-              </TableCell>
+      
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-xs sm:text-sm">Transaction ID</TableHead>
+              <TableHead className="text-xs sm:text-sm">Member</TableHead>
+              <TableHead className="text-xs sm:text-sm">Type</TableHead>
+              <TableHead className="text-xs sm:text-sm">Amount</TableHead>
+              <TableHead className="text-xs sm:text-sm">Date</TableHead>
+              <TableHead className="text-xs sm:text-sm">Status</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {transactions.map((transaction) => (
+              <TableRow key={transaction.id}>
+                <TableCell className="font-medium text-xs sm:text-sm">{transaction.id}</TableCell>
+                <TableCell className="text-xs sm:text-sm">{transaction.member}</TableCell>
+                <TableCell className="text-gray-600 text-xs sm:text-sm">{transaction.type}</TableCell>
+                <TableCell className="font-semibold text-xs sm:text-sm">{transaction.amount}</TableCell>
+                <TableCell className="text-gray-600 text-xs sm:text-sm">{transaction.date}</TableCell>
+                <TableCell>
+                  <Badge className={`${statusColors[transaction.status]} text-xs`} variant="secondary">
+                    {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden divide-y divide-gray-200">
+        {transactions.map((transaction) => (
+          <div key={transaction.id} className="p-4 space-y-2">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <p className="text-xs text-gray-500">{transaction.id}</p>
+                <p className="font-medium text-sm">{transaction.member}</p>
+              </div>
+              <Badge className={`${statusColors[transaction.status]} text-xs flex-shrink-0`} variant="secondary">
+                {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+              </Badge>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="text-gray-500">Type: </span>
+                <span className="font-medium">{transaction.type}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Amount: </span>
+                <span className="font-medium">{transaction.amount}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Date: </span>
+                <span className="font-medium">{transaction.date}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

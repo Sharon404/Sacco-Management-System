@@ -156,17 +156,3 @@ For questions or issues with the SACCO Management System, please contact your sy
 ## License
 
 This project is proprietary and intended for use by authorized SACCO organizations.
-
-## Project Gallery
-
-### SACCO Management System
-
-Live deployment: [https://sharon404.github.io/Sacco-Management-System/](https://sharon404.github.io/Sacco-Management-System/)
-
-![SACCO dashboard](assets/screenshots/sacco-dashboard.png)
-
-### Grainshare
-
-Live deployment: [https://sharon404.github.io/Grainshare/](https://sharon404.github.io/Grainshare/)
-
-![Grainshare homepage](assets/screenshots/grainshare-home.png)
