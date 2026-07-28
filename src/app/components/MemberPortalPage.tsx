@@ -7,6 +7,7 @@ import {
   Wallet,
   Heart,
   TrendingUp,
+  Phone,
   Calendar,
   Download,
   CreditCard,
@@ -90,9 +91,21 @@ export function MemberPortalPage() {
   const [showBalance, setShowBalance] = useState(true);
   const memberName = 'Michael Chen';
   const memberNumber = 'MEM-2024-002';
+  const memberPhoneNumber = '+254 712 345 678';
+  const registrationFee = 2000.0;
+  const expectedContribution = 5000.0;
+  const actualContribution = 4200.0;
+  const arrears = expectedContribution - actualContribution;
+  const delayedPaymentInterest = 126.0;
+  const totalArrears = arrears + delayedPaymentInterest;
+  const cumulativeMonthlyContribution = 7350.0;
+  const contributionShareDividend = 310.0;
   const savingsBalance = 32150.0;
   const loanBalance = 48800.0;
   const welfareContributions = 450.0;
+
+  const formatCurrency = (amount: number) =>
+    `KES ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
@@ -136,7 +149,13 @@ export function MemberPortalPage() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">Welcome back, {memberName.split(' ')[0]}!</h1>
-                <p className="text-sm text-gray-500">{memberNumber}</p>
+                <div className="text-sm text-gray-500">
+                  <p>{memberNumber}</p>
+                  <p className="flex items-center gap-1">
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>{memberPhoneNumber}</span>
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -334,19 +353,47 @@ export function MemberPortalPage() {
 
             {/* Account Summary */}
             <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-              <h3 className="font-semibold text-green-900 mb-4">Account Summary</h3>
+              <h3 className="font-semibold text-green-900 mb-4">Member Contribution Summary</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-green-700">Member Since</span>
-                  <span className="font-semibold text-green-900">Jan 2024</span>
+                  <span className="text-sm text-green-700">Name</span>
+                  <span className="font-semibold text-green-900">{memberName}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-green-700">Total Contributions</span>
-                  <span className="font-semibold text-green-900">KES 32,150</span>
+                  <span className="text-sm text-green-700">Telephone Number</span>
+                  <span className="font-semibold text-green-900">{memberPhoneNumber}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-green-700">Credit Score</span>
-                  <Badge className="bg-green-600 text-white">820</Badge>
+                  <span className="text-sm text-green-700">Registration Fee</span>
+                  <span className="font-semibold text-green-900">{formatCurrency(registrationFee)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Expected Contribution</span>
+                  <span className="font-semibold text-green-900">{formatCurrency(expectedContribution)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Actual Contribution</span>
+                  <span className="font-semibold text-green-900">{formatCurrency(actualContribution)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Arrears</span>
+                  <span className="font-semibold text-red-700">{formatCurrency(arrears)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Interest on Delayed Payment</span>
+                  <span className="font-semibold text-amber-700">{formatCurrency(delayedPaymentInterest)}</span>
+                </div>
+                <div className="flex justify-between items-center border-t border-green-300 pt-3">
+                  <span className="text-sm text-green-700">Total Arrears</span>
+                  <span className="font-semibold text-red-700">{formatCurrency(totalArrears)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Monthly Cumulative SACCO Contribution</span>
+                  <span className="font-semibold text-green-900">{formatCurrency(cumulativeMonthlyContribution)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">Contribution Share (Dividend)</span>
+                  <Badge className="bg-green-600 text-white">{formatCurrency(contributionShareDividend)}</Badge>
                 </div>
               </div>
             </Card>
