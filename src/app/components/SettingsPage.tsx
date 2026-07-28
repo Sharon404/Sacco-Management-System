@@ -602,21 +602,21 @@ export function SettingsPage() {
                     <h3 className="font-medium text-gray-900 mb-4">Welfare Contributions</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="welfareAmount">Monthly Welfare Amount *</Label>
+                        <Label htmlFor="welfareAmount">Yearly Welfare Amount *</Label>
                         <div className="relative mt-1">
                           <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-gray-400">KES</span>
                           <Input
                             id="welfareAmount"
                             type="number"
                             placeholder="KES"
-                            defaultValue="100"
+                            defaultValue="5000"
                             className="pl-14"
                           />
                         </div>
                       </div>
                       <div>
                         <Label htmlFor="welfareFrequency">Contribution Frequency</Label>
-                        <Select defaultValue="monthly">
+                        <Select defaultValue="yearly">
                           <SelectTrigger id="welfareFrequency" className="mt-1">
                             <SelectValue />
                           </SelectTrigger>
@@ -625,6 +625,7 @@ export function SettingsPage() {
                             <SelectItem value="biweekly">Bi-weekly</SelectItem>
                             <SelectItem value="monthly">Monthly</SelectItem>
                             <SelectItem value="quarterly">Quarterly</SelectItem>
+                            <SelectItem value="yearly">Yearly</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

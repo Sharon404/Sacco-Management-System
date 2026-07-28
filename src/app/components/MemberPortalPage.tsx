@@ -98,11 +98,26 @@ export function MemberPortalPage() {
   const arrears = expectedContribution - actualContribution;
   const delayedPaymentInterest = 126.0;
   const totalArrears = arrears + delayedPaymentInterest;
-  const cumulativeMonthlyContribution = 7350.0;
+  const monthlySaccoCollections = {
+    Jan: 68400.0,
+    Feb: 72000.0,
+    Mar: 75850.0,
+    Apr: 70120.0,
+    May: 79250.0,
+    Jun: 81100.0,
+    Jul: 76890.0,
+    Aug: 83540.0,
+    Sep: 80420.0,
+    Oct: 86210.0,
+    Nov: 89000.0,
+    Dec: 91550.0,
+  } as const;
+  const currentMonthKey = new Date().toLocaleString('en-US', { month: 'short' }) as keyof typeof monthlySaccoCollections;
+  const currentMonthContribution = monthlySaccoCollections[currentMonthKey];
   const contributionShareDividend = 310.0;
   const savingsBalance = 32150.0;
   const loanBalance = 48800.0;
-  const welfareContributions = 450.0;
+  const annualWelfareContribution = 5000.0;
 
   const formatCurrency = (amount: number) =>
     `KES ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -236,11 +251,11 @@ export function MemberPortalPage() {
             </div>
             <p className="text-sm text-purple-100 mb-2">Welfare Contributions</p>
             <p className="text-3xl font-bold mb-4">
-              {showBalance ? `KES ${welfareContributions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••••'}
+              {showBalance ? `KES ${annualWelfareContribution.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••••'}
             </p>
             <div className="flex items-center justify-between text-sm">
               <div className="text-purple-100">
-                <span>Total contributed</span>
+                <span>Annual standard</span>
               </div>
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 h-8 px-3">
                 View Events
@@ -388,8 +403,8 @@ export function MemberPortalPage() {
                   <span className="font-semibold text-red-700">{formatCurrency(totalArrears)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-green-700">Monthly Cumulative SACCO Contribution</span>
-                  <span className="font-semibold text-green-900">{formatCurrency(cumulativeMonthlyContribution)}</span>
+                  <span className="text-sm text-green-700">Monthly Cumulative SACCO Contribution ({currentMonthKey})</span>
+                  <span className="font-semibold text-green-900">{formatCurrency(currentMonthContribution)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-green-700">Contribution Share (Dividend)</span>
@@ -453,8 +468,8 @@ export function MemberPortalPage() {
               <p className="text-sm text-gray-600">Welfare Support</p>
               <Heart className="w-4 h-4 text-purple-600" />
             </div>
-            <p className="text-2xl font-bold text-gray-900">KES 450</p>
-            <p className="text-xs text-gray-500 mt-2">Total contributed</p>
+            <p className="text-2xl font-bold text-gray-900">KES 5,000</p>
+            <p className="text-xs text-gray-500 mt-2">Annual standard</p>
           </Card>
         </div>
       </div>
