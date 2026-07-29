@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { transactions as contributionTransactions } from './ContributionsPage';
 import {
   PiggyBank,
   Wallet,
@@ -98,22 +99,44 @@ export function MemberPortalPage() {
   const arrears = expectedContribution - actualContribution;
   const delayedPaymentInterest = 126.0;
   const totalArrears = arrears + delayedPaymentInterest;
-  const monthlySaccoCollections = {
-    Jan: 68400.0,
-    Feb: 72000.0,
-    Mar: 75850.0,
-    Apr: 70120.0,
-    May: 79250.0,
-    Jun: 81100.0,
-    Jul: 76890.0,
-    Aug: 83540.0,
-    Sep: 80420.0,
-    Oct: 86210.0,
-    Nov: 89000.0,
-    Dec: 91550.0,
+  const parseCurrencyAmount = (amount: string) =>
+    Number(amount.replace(/[^0-9.-]/g, ''));
+
+  const monthOrder = {
+    Jan: 0,
+    Feb: 1,
+    Mar: 2,
+    Apr: 3,
+    May: 4,
+    Jun: 5,
+    Jul: 6,
+    Aug: 7,
+    Sep: 8,
+    Oct: 9,
+    Nov: 10,
+    Dec: 11,
   } as const;
-  const currentMonthKey = new Date().toLocaleString('en-US', { month: 'short' }) as keyof typeof monthlySaccoCollections;
-  const currentMonthContribution = monthlySaccoCollections[currentMonthKey];
+
+  const contributionTotalsByMonth = contributionTransactions
+    .filter(
+      (transaction) =>
+        transaction.type === 'Monthly Contribution' && transaction.status === 'completed',
+    )
+    .reduce<Record<string, number>>((totals, transaction) => {
+      const monthKey = new Date(transaction.date).toLocaleString('en-US', { month: 'short' });
+      totals[monthKey] = (totals[monthKey] ?? 0) + parseCurrencyAmount(transaction.amount);
+      return totals;
+    }, {});
+
+  const currentMonthKey = new Date().toLocaleString('en-US', { month: 'short' });
+  const availableMonths = Object.keys(contributionTotalsByMonth);
+  const latestAvailableMonth = availableMonths.sort(
+    (monthA, monthB) => monthOrder[monthA as keyof typeof monthOrder] - monthOrder[monthB as keyof typeof monthOrder],
+  ).at(-1);
+  const displayMonthKey = contributionTotalsByMonth[currentMonthKey]
+    ? currentMonthKey
+    : latestAvailableMonth ?? currentMonthKey;
+  const currentMonthContribution = contributionTotalsByMonth[displayMonthKey] ?? 0;
   const contributionShareDividend = 310.0;
   const savingsBalance = 32150.0;
   const loanBalance = 48800.0;
@@ -403,7 +426,7 @@ export function MemberPortalPage() {
                   <span className="font-semibold text-red-700">{formatCurrency(totalArrears)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-green-700">Monthly Cumulative SACCO Contribution ({currentMonthKey})</span>
+                  <span className="text-sm text-green-700">Monthly Cumulative SACCO Contribution ({displayMonthKey})</span>
                   <span className="font-semibold text-green-900">{formatCurrency(currentMonthContribution)}</span>
                 </div>
                 <div className="flex justify-between items-center">

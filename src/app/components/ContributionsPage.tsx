@@ -49,7 +49,12 @@ interface Transaction {
   paymentMethod: string;
 }
 
-const transactions: Transaction[] = [
+const parseCurrencyAmount = (amount: string) => Number(amount.replace(/[^0-9.-]/g, ''));
+
+const getMonthKey = (date: string) =>
+  new Date(date).toLocaleString('en-US', { month: 'short', year: 'numeric' });
+
+export const transactions: Transaction[] = [
   {
     id: 'TXN-2026-001',
     memberName: 'Sarah Johnson',
@@ -132,16 +137,6 @@ const transactions: Transaction[] = [
   },
 ];
 
-const monthlyData = [
-  { month: 'Aug', amount: 45000 },
-  { month: 'Sep', amount: 52000 },
-  { month: 'Oct', amount: 48000 },
-  { month: 'Nov', amount: 61000 },
-  { month: 'Dec', amount: 55000 },
-  { month: 'Jan', amount: 68000 },
-  { month: 'Feb', amount: 72000 },
-];
-
 const statusColors = {
   completed: 'bg-green-100 text-green-700',
   pending: 'bg-yellow-100 text-yellow-700',
@@ -150,6 +145,27 @@ const statusColors = {
 
 export function ContributionsPage() {
   const [showAddForm, setShowAddForm] = useState(false);
+  const monthlyData = Array.from(
+    transactions
+      .filter((transaction) => transaction.type === 'Monthly Contribution' && transaction.status === 'completed')
+      .reduce((monthTotals, transaction) => {
+        const monthKey = getMonthKey(transaction.date);
+        monthTotals.set(monthKey, (monthTotals.get(monthKey) ?? 0) + parseCurrencyAmount(transaction.amount));
+        return monthTotals;
+      }, new Map<string, number>())
+      .entries(),
+  )
+    .sort(([monthA], [monthB]) => new Date(`01 ${monthA}`).getTime() - new Date(`01 ${monthB}`).getTime())
+    .map(([month, amount]) => ({ month, amount }));
+
+  const latestMonthAmount = monthlyData.at(-1)?.amount ?? 0;
+  const totalMonthlyContributions = monthlyData.reduce((sum, entry) => sum + entry.amount, 0);
+  const avgMonthlyContribution = monthlyData.length ? totalMonthlyContributions / monthlyData.length : 0;
+  const activeContributors = new Set(
+    transactions
+      .filter((transaction) => transaction.type === 'Monthly Contribution' && transaction.status === 'completed')
+      .map((transaction) => transaction.memberNumber),
+  ).size;
 
   return (
     <div className="p-8">
@@ -181,8 +197,8 @@ export function ContributionsPage() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">This Month</p>
-              <p className="text-2xl font-bold text-gray-900">KES 72,000</p>
-              <p className="text-sm text-gray-500 mt-2">285 contributions</p>
+              <p className="text-2xl font-bold text-gray-900">KES {latestMonthAmount.toLocaleString('en-US')}</p>
+              <p className="text-sm text-gray-500 mt-2">{transactions.filter((transaction) => transaction.type === 'Monthly Contribution' && transaction.status === 'completed').length} contributions</p>
             </div>
             <div className="bg-blue-100 text-blue-600 p-3 rounded-lg">
               <Calendar className="w-6 h-6" />
@@ -194,7 +210,7 @@ export function ContributionsPage() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Avg Contribution</p>
-              <p className="text-2xl font-bold text-gray-900">KES 2,340</p>
+              <p className="text-2xl font-bold text-gray-900">KES {avgMonthlyContribution.toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
               <p className="text-sm text-gray-500 mt-2">Per member</p>
             </div>
             <div className="bg-purple-100 text-purple-600 p-3 rounded-lg">
@@ -207,8 +223,8 @@ export function ContributionsPage() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Active Contributors</p>
-              <p className="text-2xl font-bold text-gray-900">2,698</p>
-              <p className="text-sm text-green-600 mt-2">94.8% of members</p>
+              <p className="text-2xl font-bold text-gray-900">{activeContributors.toLocaleString('en-US')}</p>
+              <p className="text-sm text-green-600 mt-2">From contribution transactions</p>
             </div>
             <div className="bg-orange-100 text-orange-600 p-3 rounded-lg">
               <DollarSign className="w-6 h-6" />
@@ -223,7 +239,7 @@ export function ContributionsPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Monthly Contributions</h2>
-              <p className="text-sm text-gray-500 mt-1">Last 7 months overview</p>
+              <p className="text-sm text-gray-500 mt-1">Derived from contribution transactions</p>
             </div>
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
