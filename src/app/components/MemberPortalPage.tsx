@@ -141,6 +141,8 @@ export function MemberPortalPage() {
   const savingsBalance = 32150.0;
   const loanBalance = 48800.0;
   const annualWelfareContribution = 5000.0;
+  const welfarePaidAmount = 2500.0;
+  const welfareBalanceAmount = annualWelfareContribution - welfarePaidAmount;
 
   const formatCurrency = (amount: number) =>
     `KES ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -276,13 +278,19 @@ export function MemberPortalPage() {
             <p className="text-3xl font-bold mb-4">
               {showBalance ? `KES ${annualWelfareContribution.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••••'}
             </p>
-            <div className="flex items-center justify-between text-sm">
-              <div className="text-purple-100">
-                <span>Annual standard</span>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between text-purple-100">
+                <span>Paid so far</span>
+                <span className="font-semibold text-white">
+                  {showBalance ? `KES ${welfarePaidAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••••'}
+                </span>
               </div>
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 h-8 px-3">
-                View Events
-              </Button>
+              <div className="flex items-center justify-between text-purple-100">
+                <span>Balance remaining</span>
+                <span className="font-semibold text-white">
+                  {showBalance ? `KES ${welfareBalanceAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••••'}
+                </span>
+              </div>
             </div>
           </Card>
         </div>
@@ -491,8 +499,8 @@ export function MemberPortalPage() {
               <p className="text-sm text-gray-600">Welfare Support</p>
               <Heart className="w-4 h-4 text-purple-600" />
             </div>
-            <p className="text-2xl font-bold text-gray-900">KES 5,000</p>
-            <p className="text-xs text-gray-500 mt-2">Annual standard</p>
+            <p className="text-2xl font-bold text-gray-900">KES 2,500 paid</p>
+            <p className="text-xs text-gray-500 mt-2">KES 2,500 balance from annual KES 5,000</p>
           </Card>
         </div>
       </div>
