@@ -190,6 +190,7 @@ export function WelfarePage() {
             </tbody>
           </table>
         </div>
+      </div>
     </div>
   );
 }
