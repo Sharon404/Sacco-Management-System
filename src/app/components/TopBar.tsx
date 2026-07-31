@@ -1,12 +1,13 @@
-import { Search, Bell, ChevronDown } from 'lucide-react';
+import { Search, Bell, ChevronDown, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Input } from './ui/input';
 
 interface TopBarProps {
   menuButton?: React.ReactNode;
+  onLogout?: () => void;
 }
 
-export function TopBar({ menuButton }: TopBarProps) {
+export function TopBar({ menuButton, onLogout }: TopBarProps) {
   return (
     <div className="h-16 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
       {/* Search Bar */}
@@ -33,6 +34,16 @@ export function TopBar({ menuButton }: TopBarProps) {
           <Bell className="w-5 h-5 text-gray-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
+
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
+        )}
 
         {/* Profile - Hidden on small mobile, shown on tablet+ */}
         <div className="hidden sm:flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray-200">

@@ -13,6 +13,7 @@ import {
   Smartphone,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react';
 import { SidebarItem } from './components/SidebarItem';
 import { TopBar } from './components/TopBar';
@@ -28,6 +29,7 @@ import { USSDPage } from './components/USSDPage';
 import { PaymentsPage } from './components/PaymentsPage';
 import { UsersPage } from './components/UsersPage';
 import { SettingsPage } from './components/SettingsPage';
+import { LoginPage } from './components/LoginPage';
 import { useIsMobile } from './components/ui/use-mobile';
 
 const navigationItems = [
@@ -45,9 +47,27 @@ const navigationItems = [
 ];
 
 export default function App() {
+  const [isMemberLoggedIn, setIsMemberLoggedIn] = useState(false);
   const [activeNav, setActiveNav] = useState('Dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  const handleLogout = () => {
+    setIsMemberLoggedIn(false);
+    setActiveNav('Dashboard');
+    setMobileMenuOpen(false);
+  };
+
+  if (!isMemberLoggedIn) {
+    return (
+      <LoginPage
+        onSubmit={() => {
+          setIsMemberLoggedIn(true);
+          setActiveNav('Member Portal');
+        }}
+      />
+    );
+  }
 
   const renderSidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -107,7 +127,7 @@ export default function App() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Bar */}
-          <TopBar menuButton={null} />
+          <TopBar menuButton={null} onLogout={handleLogout} />
 
           {/* Content Area */}
           <main className="flex-1 overflow-auto">
@@ -129,16 +149,28 @@ export default function App() {
           </div>
           <h1 className="text-sm font-bold text-gray-900">SACCO</h1>
         </div>
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          {mobileMenuOpen ? (
-            <X className="w-5 h-5 text-gray-600" />
-          ) : (
-            <Menu className="w-5 h-5 text-gray-600" />
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleLogout}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Logout"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5 text-gray-600" />
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Toggle menu"
+            title="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="w-5 h-5 text-gray-600" />
+            ) : (
+              <Menu className="w-5 h-5 text-gray-600" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu (slides down) */}
