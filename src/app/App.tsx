@@ -47,27 +47,17 @@ const navigationItems = [
 ];
 
 export default function App() {
-  const [isMemberLoggedIn, setIsMemberLoggedIn] = useState(false);
+  const [isMemberPortalLoggedIn, setIsMemberPortalLoggedIn] = useState(false);
   const [activeNav, setActiveNav] = useState('Dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const isOnMemberPortal = activeNav === 'Member Portal';
+  const showMemberPortalLogout = isOnMemberPortal && isMemberPortalLoggedIn;
 
   const handleLogout = () => {
-    setIsMemberLoggedIn(false);
-    setActiveNav('Dashboard');
+    setIsMemberPortalLoggedIn(false);
     setMobileMenuOpen(false);
   };
-
-  if (!isMemberLoggedIn) {
-    return (
-      <LoginPage
-        onSubmit={() => {
-          setIsMemberLoggedIn(true);
-          setActiveNav('Member Portal');
-        }}
-      />
-    );
-  }
 
   const renderSidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -127,11 +117,11 @@ export default function App() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Bar */}
-          <TopBar menuButton={null} onLogout={handleLogout} />
+          <TopBar menuButton={null} onLogout={showMemberPortalLogout ? handleLogout : undefined} />
 
           {/* Content Area */}
           <main className="flex-1 overflow-auto">
-            {renderContent(activeNav)}
+            {renderContent(activeNav, isMemberPortalLoggedIn, () => setIsMemberPortalLoggedIn(true))}
           </main>
         </div>
       </div>
@@ -150,14 +140,16 @@ export default function App() {
           <h1 className="text-sm font-bold text-gray-900">SACCO</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleLogout}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Logout"
-            title="Logout"
-          >
-            <LogOut className="w-5 h-5 text-gray-600" />
-          </button>
+          {showMemberPortalLogout && (
+            <button
+              onClick={handleLogout}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Logout"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5 text-gray-600" />
+            </button>
+          )}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -196,14 +188,18 @@ export default function App() {
       {/* Content Area */}
       <main className="flex-1 overflow-auto">
         <div className="p-4 sm:p-6">
-          {renderContent(activeNav)}
+          {renderContent(activeNav, isMemberPortalLoggedIn, () => setIsMemberPortalLoggedIn(true))}
         </div>
       </main>
     </div>
   );
 }
 
-function renderContent(activeNav: string) {
+function renderContent(
+  activeNav: string,
+  isMemberPortalLoggedIn: boolean,
+  onMemberPortalLogin: () => void,
+) {
   if (activeNav === 'Dashboard') {
     return (
       <>
@@ -333,7 +329,10 @@ function renderContent(activeNav: string) {
   if (activeNav === 'Reports') return <ReportsPage />;
   if (activeNav === 'Users') return <UsersPage />;
   if (activeNav === 'Settings') return <SettingsPage />;
-  if (activeNav === 'Member Portal') return <MemberPortalPage />;
+  if (activeNav === 'Member Portal') {
+    if (!isMemberPortalLoggedIn) return <LoginPage onSubmit={onMemberPortalLogin} />;
+    return <MemberPortalPage />;
+  }
   if (activeNav === 'USSD Service') return <USSDPage />;
 
   return null;

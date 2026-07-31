@@ -1,6 +1,8 @@
 import type { FormEvent } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { PiggyBank, User } from 'lucide-react';
 
 interface LoginPageProps {
@@ -21,15 +23,31 @@ export function LoginPage({ onSubmit }: LoginPageProps) {
             <PiggyBank className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">SACCO Member Access</h1>
-          <p className="text-sm text-gray-600 mt-2">No credentials required. Continue to open your member portal.</p>
+          <p className="text-sm text-gray-600 mt-2">Enter any username/email and password to continue to the member portal.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-start gap-3">
-            <User className="w-5 h-5 text-blue-600 mt-0.5" />
-            <p className="text-sm text-gray-700">
-              Click continue to access your account dashboard and welfare contribution details.
-            </p>
+          <div>
+            <Label htmlFor="portal-username">Username or Email</Label>
+            <div className="relative mt-1">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                id="portal-username"
+                type="text"
+                placeholder="e.g. member01 or name@email.com"
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="portal-password">Password</Label>
+            <Input
+              id="portal-password"
+              type="password"
+              placeholder="Enter any password"
+              className="mt-1"
+            />
           </div>
 
           <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
